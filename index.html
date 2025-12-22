@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <!-- Primary Meta Tags -->
+  <meta name="title" content="SimWorld-Robotics: Synthesizing Photorealistic and Dynamic Urban Environments for Multimodal Robot Navigation and Collaboration - Yan Zhuang, Jiawei Ren, Xiaokang Ye, Jianzhi Shen, Ruixuan Zhang, Tianai Yue, Muhammad Faayez, Xuhong He, Xiyan Zhang, Ziqiao Ma, Lianhui Qin, Zhiting Hu, Tianmin Shu">
+  <meta name="keywords" content="Embodied Simulator, Multimodal Instruction Following, Robot Navigation, Multi-Robot Collaboration, Communication">
+  <meta name="author" content="Yan Zhuang, Jiawei Ren, Xiaokang Ye, Jianzhi Shen, Ruixuan Zhang, Tianai Yue, Muhammad Faayez, Xuhong He, Xiyan Zhang, Ziqiao Ma, Lianhui Qin, Zhiting Hu, Tianmin Shu">
+
+
+  <!-- TODO: Replace with your paper title and authors -->
+  <title>DeliveryBench: Can Agents Earn Profit in Real World? | Academic Research</title>
+  
+  <!-- Favicon and App Icons -->
+  <link rel="icon" type="image/x-icon" href="static/images/scai_logo.png">
+  <link rel="apple-touch-icon" href="static/images/scai_logo.png">
+  
+  <!-- Critical CSS - Load synchronously -->
+  <link rel="stylesheet" href="static/css/bulma.min.css">
+  <link rel="stylesheet" href="static/css/index.css">
+  
+  <!-- Non-critical CSS - Load asynchronously -->
+  <link rel="preload" href="static/css/bulma-carousel.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" href="static/css/bulma-slider.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" href="static/css/fontawesome.all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  
+  <!-- Fallback for browsers that don't support preload -->
+  <noscript>
+    <link rel="stylesheet" href="static/css/bulma-carousel.min.css">
+    <link rel="stylesheet" href="static/css/bulma-slider.min.css">
+    <link rel="stylesheet" href="static/css/fontawesome.all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  </noscript>
+  
+  <!-- Fonts - Optimized loading -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Defer non-critical JavaScript -->
+  <script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="https://documentcloud.adobe.com/view-sdk/main.js"></script>
+  <script defer src="static/js/fontawesome.all.min.js"></script>
+  <script defer src="static/js/bulma-carousel.min.js"></script>
+  <script defer src="static/js/bulma-slider.min.js"></script>
+  <script defer src="static/js/index.js"></script>
+  
+  <!-- Structured Data for Academic Papers -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ScholarlyArticle",
+    "headline": "PAPER_TITLE",
+    "description": "BRIEF_DESCRIPTION_OF_YOUR_RESEARCH_CONTRIBUTION_AND_FINDINGS",
+    "author": [
+      {
+        "@type": "Person",
+        "name": "Yan Zhuang",
+        "affiliation": {
+          "@type": "Organization",
+          "name": "University of Virginia"
+        }
+      }
+    ],
+    "datePublished": "2025-12-02",
+    "publisher": {
+      "@type": "Organization",
+      "name": "NeurIPS"
+    },
+    "url": "https://YOUR_DOMAIN.com/YOUR_PROJECT_PAGE",
+    "image": "https://YOUR_DOMAIN.com/static/images/social_preview.png",
+    "keywords": ["KEYWORD1", "KEYWORD2", "KEYWORD3", "machine learning", "computer vision"],
+    "abstract": "FULL_ABSTRACT_TEXT_HERE",
+    "citation": "BIBTEX_CITATION_HERE",
+    "isAccessibleForFree": true,
+    "license": "https://creativecommons.org/licenses/by/4.0/",
+    "mainEntity": {
+      "@type": "WebPage",
+      "@id": "https://YOUR_DOMAIN.com/YOUR_PROJECT_PAGE"
+    },
+    "about": [
+      {
+        "@type": "Thing",
+        "name": "RESEARCH_AREA_1"
+      },
+      {
+        "@type": "Thing", 
+        "name": "RESEARCH_AREA_2"
+      }
+    ]
+  }
+  </script>
+  
+  <!-- Website/Organization Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "INSTITUTION_OR_LAB_NAME",
+    "url": "https://YOUR_INSTITUTION_WEBSITE.com",
+    "logo": "https://YOUR_DOMAIN.com/static/images/favicon.ico",
+    "sameAs": [
+      "https://twitter.com/YOUR_TWITTER_HANDLE",
+      "https://github.com/YOUR_GITHUB_USERNAME"
+    ]
+  }
+  </script>
+</head>
+<body>
+
+
+  <!-- Scroll to Top Button -->
+  <button class="scroll-to-top" onclick="scrollToTop()" title="Scroll to top" aria-label="Scroll to top">
+    <i class="fas fa-chevron-up"></i>
+  </button>
+
+  <!-- More Works Dropdown -->
+  <div class="more-works-container">
+    <button class="more-works-btn" onclick="toggleMoreWorks()" title="View More Works from Our Lab">
+      <i class="fas fa-flask"></i>
+      More Works
+      <i class="fas fa-chevron-down dropdown-arrow"></i>
+    </button>
+    <div class="more-works-dropdown" id="moreWorksDropdown">
+      <div class="dropdown-header">
+        <h4>More Works from Our Organization</h4>
+        <button class="close-btn" onclick="toggleMoreWorks()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="works-list">
+        <!-- TODO: Replace with your lab's related works -->
+        <a href="https://simworld.org/" class="work-item" target="_blank">
+          <div class="work-info">
+            <!-- TODO: Replace with actual paper title -->
+            <h5>SimWorld</h5>
+            <!-- TODO: Replace with brief description -->
+            <p>An Open-ended Realistic Simulator for Autonomous Agents in Physical and Social Worlds.</p>
+          </div>
+          <i class="fas fa-external-link-alt"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <main id="main-content">
+  <section class="hero" style="margin: auto auto -30px auto;">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <!-- TODO: Replace with your paper title -->
+            <h1 class="title is-1 publication-title">DeliveryBench</h1>
+            <h2 class="subtitle is-4 publication-subtitle">Can Agents Earn Profit in Real World?</h2>
+            <div class="is-size-5 publication-authors">
+              <!-- Conference Info -->
+              <!-- <div class="conference-info">
+                NeurIPS 2025
+              </div> -->
+              
+              <!-- TODO: Replace with your paper authors and their personal links -->
+              <!-- Authors -->
+              <div class="author-line">
+                <span class="author-block">
+                  <a href="#" target="_blank">Lingjun Mao</a><sup>1</sup>,</span>
+                <span class="author-block">
+                  <a href="#" target="_blank">Jiawei Ren</a><sup>1</sup>,</span>
+                <span class="author-block">
+                  <a href="#" target="_blank">Kun Zhou</a><sup>1</sup>,</span>
+                <span class="author-block">
+                  <a href="#" target="_blank">Jixuan Chen</a><sup>1</sup>,</span>
+                <span class="author-block">
+                  <a href="#" target="_blank">Ziqiao Ma</a><sup>2</sup>,</span>
+                <span class="author-block">
+                  <a href="#" target="_blank">Lianhui Qin</a><sup>1†</sup>,</span>
+              </div>
+              
+              <!-- Affiliations -->
+              <div class="affiliations">
+                <div class="affiliation-item"><sup>1</sup>UC San Diego</div>
+                <div class="affiliation-item"><sup>2</sup>University of Michigan</div>
+              </div>
+            </div>
+
+                  <div class="column has-text-centered">
+                    <div class="publication-links">
+                         <!-- TODO: Update with your arXiv paper ID -->
+                      <span class="link-block">
+                        <a href="static/pdfs/SimWorld_Robotics.pdf" target="_blank"
+                        class="external-link button is-normal is-rounded is-dark">
+                        <span class="icon">
+                          <i class="fas fa-file-pdf"></i>
+                        </span>
+                        <span>Paper</span>
+                      </a>
+                    </span>
+
+
+                  <!-- TODO: Replace with your GitHub repository URL -->
+                  <span class="link-block">
+                    <a href="https://github.com/SCAI-JHU/SimWorld-Robotics" target="_blank"
+                    class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fab fa-github"></i>
+                    </span>
+                    <span>Code</span>
+                  </a>
+                </span>
+
+                  <!-- Dataset button -->
+                  <span class="link-block">
+                    <a href="https://huggingface.co/datasets/jise/simworld20k" target="_blank"
+                    class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fas fa-database"></i>
+                    </span>
+                    <span>SimWorld-20K</span>
+                  </a>
+                </span>
+
+                <!-- TODO: Update with your arXiv paper ID
+                <span class="link-block">
+                  <a href="https://arxiv.org/abs/<ARXIV PAPER ID>" target="_blank"
+                  class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                    <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a> -->
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- Teaser video-->
+<div class="publication-video" style="width: 70%; margin: 8px auto 24px auto;">
+  <figure class="image is-16by9">
+    <iframe
+      class="has-ratio"
+      src="https://www.youtube.com/embed/H3582_vV_lo"
+      allowfullscreen>
+    </iframe>
+  </figure>
+</div>
+
+
+<!-- Paper abstract -->
+<section class="section hero is-light">
+  <!-- Inner wrapper: same width as video -->
+  <div style="width: 70%; margin: 0 auto;">
+
+    <h2 class="title is-3 has-text-centered">Abstract</h2>
+
+    <div class="content">
+      <p style="text-align: justify; color: rgb(31, 30, 30);">
+        LLMs and VLMs are increasingly deployed as embodied agents, yet existing benchmarks largely revolve around
+        simple short-term tasks and struggle to capture rich realistic constraints that shape real-world decision
+        making. To close this gap, we propose <b>DeliveryBench</b>, a city-scale embodied benchmark grounded in the
+        real-world profession of food delivery. Food couriers naturally operate under long-horizon objectives
+        (maximizing net profit over hours) while managing diverse constraints, e.g., delivery deadlines,
+        transportation expenses, vehicle battery levels, and necessary interactions with other couriers and customers.
+        <b>DeliveryBench</b> instantiates this setting in procedurally generated 3D cities with diverse road networks,
+        buildings, functional locations, transportation modes, and realistic resource dynamics, enabling systematic
+        evaluation of constraint-aware, long-horizon planning.
+      </p>
+
+      <p style="text-align: justify; color: rgb(31, 30, 30);">
+        We benchmark a range of VLM-based agents across nine cities and compare them with human players. Our results
+        reveal a substantial performance gap to humans, and find that these agents are short-sighted and frequently
+        break basic commonsense constraints. Additionally, we observe distinct personalities across models (e.g.,
+        adventurous GPT-5 vs. conservative Claude), highlighting both the brittleness and the diversity of current
+        VLM-based embodied agents in realistic, constraint-dense environments.
+      </p>
+    </div>
+  </div>
+</section>
+<!-- End paper abstract -->
+
+
+<!-- Paper abstract -->
+<section class="section hero is-small">
+  <!-- Inner wrapper: same width as video -->
+  <div style="width: 70%; margin: 0 auto;">
+
+    <h2 class="title is-3 has-text-centered">Benchmark Overview</h2>
+
+    <!-- Figure below abstract -->
+    <figure style="margin-top: 32px;">
+      <img
+        src="static/images/deliverybench.png"
+        alt="Overview of DeliveryBench"
+        style="width: 100%; height: auto; display: block; border-radius: 6px;"
+      >
+      <figcaption class="has-text-centered is-size-6" style="margin-top: 10px; margin-bottom: 15px; color: #555;">
+        <b>Figure 1.</b> Overview of the DeliveryBench environment and task setup.
+        <!-- TODO: Replace with your own caption -->
+      </figcaption>
+    </figure>
+
+    <div class="content">
+
+      <p style="text-align: justify; color: rgb(31, 30, 30);">
+        We center our benchmark on the food-delivery scenario, where an agent operates in a virtual city and aims to
+        maximize net profit by continuously completing delivery orders. The delivery task is formalized as a
+        <em>long-horizon constrained optimization problem</em>, in which a VLM-based agent, acting as a courier, seeks to
+        maximize <em>net profit</em> over an operational horizon (e.g., two virtual hours). To achieve this goal,
+        the agent must plan and execute a sequence of delivery and supportive tasks while respecting a diverse set of
+        real-world constraints. When multiple agents coexist, they additionally encounter social dynamics such as competition and collaboration.
+
+      </p>
+    </div>
+
+  </div>
+</section>
+<!-- End paper abstract -->
+
+<!-- Paper abstract -->
+<section class="section hero is-light">
+  <!-- Inner wrapper: same width as video -->
+  <div style="width: 70%; margin: 0 auto;">
+
+    <h2 class="title is-3 has-text-centered">Key Features</h2>
+
+    <!-- Figure below abstract -->
+    <figure style="margin-top: 32px;">
+      <img
+        src="static/images/comparison.png"
+        alt="Overview of DeliveryBench"
+        style="width: 100%; height: auto; display: block; border-radius: 6px;"
+      >
+      <figcaption class="has-text-centered is-size-6" style="margin-top: 10px; margin-bottom: 15px; color: #555;">
+        <b>Figure 2.</b> Comparison of major embodied benchmarks.
+        <!-- TODO: Replace with your own caption -->
+      </figcaption>
+    </figure>
+
+    <div class="content">
+      <p style="text-align: justify; color: rgb(31, 30, 30);">
+        Compared with prior embodied benchmarks, <b>DeliveryBench</b> supports
+        long-horizon tasks (several in-game hours; typically &gt; 100 action steps)
+        with multi-dimensional real-world constraints, including:
+        <br>
+        <b>Time constraints.</b> Tasks feature deadlines and time windows that determine
+        when they can be performed. Agents must schedule actions to avoid late deliveries
+        and make efficient use of limited working time.
+        <br>
+        <b>Spatial constraints.</b> Many actions are only valid at specific locations,
+        so agents must navigate 3D cities and visit appropriate POIs in the correct order
+        (e.g., restaurants, charging stations).
+        <br>
+        <b>Resource constraints.</b> Agents must manage consumables such as stamina,
+        vehicle battery, and cash to stay operational, sometimes transforming one resource
+        into another (e.g., buying an energy drink to restore stamina).
+        <br>
+        <b>Physical constraints.</b> Environmental dynamics (e.g., temperature, motion,
+        collisions) affect food quality, requiring agents to consider item fragility and
+        perishability in route planning.
+        <br>
+        <b>Economic constraints.</b> Agents earn income but also incur operational costs
+        (e.g., recharging, renting, purchasing supplies), forcing trade-offs between
+        short-term spending and long-term profit.
+        <br>
+        <b>Social constraints.</b> In multi-agent settings, couriers collaborate and
+        compete for limited opportunities (e.g., high-value orders, charging stations),
+        influencing both strategy and outcomes.
+      </p>
+    </div>
+  </div>
+</section>
+<!-- End paper abstract -->
+
+
+<!-- Leaderboard -->
+<section class="section hero is-small">
+  <!-- Inner wrapper: same width as video -->
+  <div style="width: 70%; margin: 0 auto;">
+
+    <h2 class="title is-3 has-text-centered">Leaderboard</h2>
+    <div id="delivery-leaderboard"></div>
+
+    <style>
+      :root{
+        --lb-head:#f4f6fb;
+        --lb-border:#e6e9ef;
+        --lb-text:#1f2328;
+        --lb-neg:#c0392b;
+        --lb-profit:#fff5e6;       /* Profit 列底色 */
+        --lb-profit-head:#ffedd6;  /* Profit 表头底色 */
+        --lb-underline:#cdd6e6;    /* 城市标题下划线颜色 */
+        --lb-underline-active:#aeb9cf; /* 点击/排序激活时颜色 */
+      }
+
+      .lb-wrap{ overflow-x:auto; margin-top:.2rem; }
+
+      table.lb{
+        width:100%;
+        border-collapse:separate;
+        border-spacing:0;
+        table-layout:fixed;
+        font-size:15px;
+        color:var(--lb-text);
+        border:1px solid var(--lb-border);
+        border-radius:12px;
+        overflow:hidden;
+      }
+      .lb th,.lb td{
+        border-right:1px solid var(--lb-border);
+        border-bottom:1px solid var(--lb-border);
+        padding:12px 12px;
+        text-align:center;
+        vertical-align:middle;
+        white-space:nowrap;
+        background:#fff;
+      }
+      .lb thead th{
+        background:var(--lb-head);
+        font-weight:700;
+        text-align:center;
+      }
+      .lb .left{ text-align:left; white-space:normal; font-weight:600; }
+      .lb .num{ font-variant-numeric: tabular-nums; }
+      .lb tbody tr:nth-child(odd) td{ background:#fcfdff; }
+      .lb tbody tr:hover td{ background:#f7faff; }
+      .lb .neg{ color:var(--lb-neg); }
+
+      /* 粘性首列 */
+      @media (min-width: 992px){
+        .lb td:first-child,.lb th:first-child{ position:sticky; left:0; z-index:2; background:#fff; }
+        .lb thead th:first-child{ background:var(--lb-head); z-index:3; }
+      }
+
+      /* Profit 列高亮（注意：不再全列加粗） */
+      .col-profit-head{ background:var(--lb-profit-head)!important; }
+      .col-profit{ background:var(--lb-profit)!important; } /* ← 去掉 font-weight:600 */
+
+      /* 城市标题下方短横线（不顶满） */
+      .city-sort{ cursor:pointer; user-select:none; position:relative; }
+      .city-sort::after{
+        content:"";
+        display:block;
+        width:60%;
+        height:3px;
+        border-radius:999px;
+        background:var(--lb-underline);
+        margin:8px auto 0 auto; /* 居中 */
+      }
+      .city-sort.is-active::after{ background:var(--lb-underline-active); }
+
+      /* 排序箭头 SVG 尺寸（实心三角） */
+      .sort-caret-svg{
+        width:12px; height:12px;
+        margin-left:6px;
+        vertical-align:middle;
+      }
+    </style>
+
+    <!-- ==== 数据 JSON（不要在 JSON 内写注释） ==== -->
+    <script type="application/json" id="lb-data">
+    {
+      "cities": ["Small City", "Medium City", "Large City"],
+      "metrics": ["P", "E_base", "E_rating", "C"],
+      "rows": [
+        { "model": "GPT-5",
+          "Small City":  { "P": 27.4, "E_base": 31.1, "E_rating": 11.5, "C": 15.2 },
+          "Medium City": { "P": 26.5, "E_base": 32.9, "E_rating": 7.6,  "C": 14.0 },
+          "Large City":  { "P": 20.4, "E_base": 25.6, "E_rating": 8.3,  "C": 13.4 }
+        },
+        { "model": "GPT-4o",
+          "Small City":  { "P": 10.4, "E_base": 23.6, "E_rating": 6.8, "C": 20.0 },
+          "Medium City": { "P": 13.9, "E_base": 25.4, "E_rating": 4.9, "C": 16.3 },
+          "Large City":  { "P": 11.9, "E_base": 20.6, "E_rating": 5.3, "C": 13.9 }
+        },
+        { "model": "Claude-3.7-Sonnet",
+          "Small City":  { "P": 31.3, "E_base": 30.1, "E_rating": 14.8, "C": 13.6 },
+          "Medium City": { "P": 31.2, "E_base": 35.7, "E_rating": 10.5, "C": 14.9 },
+          "Large City":  { "P": 25.8, "E_base": 30.1, "E_rating": 13.0, "C": 17.2 }
+        },
+        { "model": "Gemini-2.5-Flash",
+          "Small City":  { "P": 30.4, "E_base": 34.8, "E_rating": 10.7, "C": 15.0 },
+          "Medium City": { "P": 29.0, "E_base": 32.3, "E_rating": 8.3,  "C": 11.5 },
+          "Large City":  { "P": 23.9, "E_base": 27.2, "E_rating": 9.0,  "C": 12.3 }
+        },
+        { "model": "Qwen2.5-VL-72B-Ins",
+          "Small City":  { "P": 5.4, "E_base": 15.1, "E_rating": 3.8, "C": 13.5 },
+          "Medium City": { "P": 6.3, "E_base": 15.6, "E_rating": 3.3, "C": 12.6 },
+          "Large City":  { "P": -2.7, "E_base": 6.4, "E_rating": 1.1, "C": 10.3 }
+        },
+        { "model": "Qwen2.5-VL-32B-Ins",
+          "Small City":  { "P": 9.8, "E_base": 15.7, "E_rating": 5.5, "C": 11.4 },
+          "Medium City": { "P": 4.4, "E_base": 11.5, "E_rating": 4.5, "C": 11.5 },
+          "Large City":  { "P": -0.1, "E_base": 8.7, "E_rating": 2.3, "C": 11.1 }
+        },
+        { "model": "LLaMA-3.2-90B-Vision-Ins",
+          "Small City":  { "P": 6.0, "E_base": 9.7, "E_rating": 2.0, "C": 5.7 },
+          "Medium City": { "P": 2.5, "E_base": 11.6, "E_rating": 2.3, "C": 11.4 },
+          "Large City":  { "P": -0.9, "E_base": 7.0, "E_rating": 1.3, "C": 9.3 }
+        },
+        { "model": "Human",
+          "Small City":  { "P": 63.6, "E_base": 77.8, "E_rating": 24.4, "C": 38.6 },
+          "Medium City": { "P": 51.5, "E_base": 73.6, "E_rating": 12.8, "C": 34.9 },
+          "Large City":  { "P": 55.4, "E_base": 74.3, "E_rating": 12.8, "C": 31.6 }
+        }
+      ],
+      "currency": "$",
+      "bold_max_among_models_only": true
+    }
+    </script>
+
+    <script>
+      (function(){
+        const mount = document.getElementById("delivery-leaderboard");
+        const DATA_ORIG = JSON.parse(document.getElementById("lb-data").textContent);
+
+        const COLS = [
+          { key:"P", label:"Profit",  type:"profit"  },
+          { key:"E", label:"Earning", type:"earning" },
+          { key:"C", label:"Expense", type:"expense" }
+        ];
+
+        const currency = DATA_ORIG.currency || "$";
+        const fmt = (x) => (typeof x === "number" ? `${currency}${x.toFixed(1)}` : x);
+        const isNeg = (x) => (typeof x === "number" && x < 0);
+
+        function earning(row, city){
+          const Eb = row[city]?.E_base ?? 0;
+          const Er = row[city]?.E_rating ?? 0;
+          return Eb + Er;
+        }
+        function cloneRows(rows){ return rows.map(r => JSON.parse(JSON.stringify(r))); }
+
+        function avgProfit(row){
+          return DATA_ORIG.cities.reduce((s,c)=> s + (row[c]?.P ?? 0), 0) / DATA_ORIG.cities.length;
+        }
+
+        // 只为 Profit & Earning 计算 max（Expense 不需要加粗对比）
+        function computeMaxes(data){
+          const maxMap = {};
+          for(const city of data.cities){
+            maxMap[city] = {};
+            for(const col of COLS){
+              if(col.key === "C"){
+                maxMap[city][col.key] = null;
+                continue;
+              }
+              const vals = data.rows
+                .filter(r => !(data.bold_max_among_models_only && r.model.toLowerCase()==="human"))
+                .map(r => (col.key==="E") ? earning(r, city) : r[city]?.[col.key])
+                .filter(v => typeof v === "number");
+              maxMap[city][col.key] = vals.length ? Math.max(...vals) : null;
+            }
+          }
+          return maxMap;
+        }
+
+        // 排序状态：默认按平均 Profit
+        let sortState = { by: "avgProfit", dir: "desc" }; // 'asc' | 'desc'
+
+        function sortRows(rows, by, dir){
+          const mul = dir === "asc" ? 1 : -1;
+          return cloneRows(rows).sort((a,b) => {
+            let va, vb;
+            if(by === "avgProfit"){
+              va = avgProfit(a);
+              vb = avgProfit(b);
+            }else{
+              va = a[by]?.P ?? -Infinity; // by=city 时按该城市 Profit
+              vb = b[by]?.P ?? -Infinity;
+            }
+            if(va === vb) return 0;
+            return (va > vb ? -1 : 1) * mul;
+          });
+        }
+
+        // 实心三角：desc=▼，asc=▲
+        function caretSVG(dir){
+          const up = (dir === "asc");
+          return `
+            <svg class="sort-caret-svg" viewBox="0 0 12 12" aria-hidden="true">
+              <polygon points="${up ? '6,2 10,8 2,8' : '2,4 10,4 6,10'}" fill="#667085"></polygon>
+            </svg>
+          `;
+        }
+
+        function render(){
+          const rowsSorted = sortRows(DATA_ORIG.rows, sortState.by, sortState.dir);
+          const data = { ...DATA_ORIG, rows: rowsSorted };
+          const maxMap = computeMaxes(data);
+
+          let html = `
+            <div class="lb-wrap">
+              <table class="lb">
+                <thead>
+                  <tr>
+                    <th rowspan="2"
+                        id="lb-sort-model"
+                        class="left ${sortState.by==='avgProfit' ? 'city-sort is-active' : ''}"
+                        style="min-width:220px; cursor:pointer;"
+                        title="Click to sort by average Profit">
+                      Model ${sortState.by==='avgProfit' ? caretSVG(sortState.dir) : ``}
+                    </th>
+                    ${data.cities.map(c => `
+                      <th class="city-sort ${sortState.by===c ? 'is-active' : ''}"
+                          data-city="${c}" colspan="${COLS.length}"
+                          title="Click to sort by ${c} Profit">
+                        ${c} ${sortState.by===c ? caretSVG(sortState.dir) : ``}
+                      </th>
+                    `).join("")}
+                  </tr>
+                  <tr>
+                    ${data.cities.map(() =>
+                      COLS.map(col => `<th class="${col.type==='profit'?'col-profit-head':''}">${col.label}</th>`).join("")
+                    ).join("")}
+                  </tr>
+                </thead>
+                <tbody>
+          `;
+
+          for(const r of data.rows){
+            html += `<tr>`;
+            html += `<td class="left">${r.model}</td>`;
+            for(const city of data.cities){
+              const P = r[city]?.P;
+              const E = earning(r, city);
+              const C = r[city]?.C;
+
+              const cells = [
+                { val:P, cls:'col-profit', key:'P', title:'' },
+                { val:E, cls:'',           key:'E', title:`Earning = E_base + E_rating = ${currency}${(r[city]?.E_base ?? 0).toFixed(1)} + ${currency}${(r[city]?.E_rating ?? 0).toFixed(1)} = ${currency}${E.toFixed(1)}` },
+                { val:C, cls:'',           key:'C', title:'' }
+              ];
+
+              for(const cell of cells){
+                const isMax = (typeof cell.val==="number") && (cell.key !== 'C') && (cell.val === maxMap[city][cell.key]);
+                const negCls = isNeg(cell.val) ? 'neg' : '';
+                const strong = v => isMax ? `<strong>${v}</strong>` : v; // Profit/Earning 只有最大值才加粗
+                html += `<td class="num ${cell.cls} ${negCls}" ${cell.title?`title="${cell.title}"`:''}>${strong(fmt(cell.val))}</td>`;
+              }
+            }
+            html += `</tr>`;
+          }
+
+          html += `</tbody></table></div>`;
+          mount.innerHTML = html;
+
+          // 绑定 Model：按平均 Profit 排序
+          const modelTh = document.getElementById('lb-sort-model');
+          if(modelTh){
+            modelTh.addEventListener('click', () => {
+              if(sortState.by === "avgProfit"){
+                sortState.dir = (sortState.dir === "desc" ? "asc" : "desc");
+              }else{
+                sortState.by = "avgProfit";
+                sortState.dir = "desc";
+              }
+              render();
+            });
+          }
+
+          // 绑定城市排序：按该城 Profit
+          document.querySelectorAll('.city-sort[data-city]').forEach(th => {
+            th.addEventListener('click', () => {
+              const city = th.getAttribute('data-city');
+              if(sortState.by === city){
+                sortState.dir = (sortState.dir === "desc" ? "asc" : "desc");
+              }else{
+                sortState.by = city;
+                sortState.dir = "desc";
+              }
+              render();
+            });
+          });
+        }
+
+        render();
+      })();
+    </script>
+
+  </div>
+</section>
+<!-- End Leaderboard -->
+
+
+
+<!-- Paper abstract -->
+<section class="section hero is-light">
+  <!-- Inner wrapper: same width as video -->
+  <div style="width: 70%; margin: 0 auto;">
+
+    <h2 class="title is-3 has-text-centered">Agent Planning-Style Analysis</h2>
+
+    <!-- Figure below abstract -->
+    <figure style="margin-top: 32px;">
+      <img
+        src="static/images/planning_style_website_01.png"
+        alt="Overview of DeliveryBench"
+        style="width: 100%; height: auto; display: block; border-radius: 6px;"
+      >
+      <figcaption class="has-text-centered is-size-6" style="margin-top: 10px; margin-bottom: 15px; color: #555;">
+        <b>Figure 3.</b> Comparison of model planning styles across six behavior dimensions, with example outputs provided as case studies.
+        <!-- TODO: Replace with your own caption -->
+      </figcaption>
+    </figure>
+
+    <div class="content">
+      <p style="text-align: justify; color: rgb(31, 30, 30);">
+        During both single- and multi-agent evaluations, we observe distinct decision-making and planning styles across models. 
+        For instance, Claude behaves more cautiously, choosing to head to a charging station once the e-scooter battery is low and pausing other tasks, 
+        whereas GPT-5 is more aggressive, often completing deliveries even with a nearly depleted battery. 
+        To further analyze model behavior in constraint-dense, real-world-like environments, 
+        we randomly sample delivery trajectories from each model and pair them with their outcomes. 
+        GPT-4o then evaluates each model's decision-making style along six dimensions. 
+      </p>
+    </div>
+  </div>
+</section>
+<!-- End paper abstract -->
+
+<!-- BibTeX citation -->
+<section class="section" id="BibTeX">
+  <div class="bibtex-wrap">
+
+    <div class="bibtex-header">
+      <h2 class="title is-4 bibtex-title">BibTeX</h2>
+      <button class="copy-bibtex-btn" onclick="copyBibTeX()" title="Copy BibTeX to clipboard">
+        <i class="fas fa-copy"></i>
+        <span class="copy-text">Copy</span>
+      </button>
+    </div>
+
+    <pre id="bibtex-code"><code>@inproceedings{zhuang2025simworld,
+  title={SimWorld-Robotics: Synthesizing Photorealistic and Dynamic Urban Environments for Multimodal Robot Navigation and Collaboration},
+  author={Zhuang, Yan and Ren, Jiawei and Ye, Xiaokang and Shen, Jianzhi and Zhang, Ruixuan and Yue, Tianai and Faayez, Muhammad and He, Xuhong and Zhang, Xiyan and Ma, Ziqiao and Qin, Lianhui and Hu, Zhiting and Shu, Tianmin},
+  booktitle={Advances in Neural Information Processing Systems},
+  year={2025},
+  url={https://openreview.net/forum?id=EyOtIOmMUh}
+}</code></pre>
+
+  </div>
+</section>
+<!-- End BibTeX citation -->
+
+<!-- Org banners -->
+<section>
+  <div
+    class="section"
+    id="org-banners-top"
+    style="display:flex; margin-top:-1rem; margin-bottom:3rem; margin-left:3rem; margin-right:3rem;"
+  >
+    <a href="https://illinois.edu/" target="_blank" rel="external" style="display:block; margin:auto;">
+      <img
+        class="center-block org-banner"
+        src="static/images/UCSD_logo.png"
+        style="width:450px; height:auto; display:block; margin:auto;"
+      >
+    </a>
+    <a
+      href="https://www.northwestern.edu/"
+      target="blank"
+      class="ext-link"
+      style="display:block; margin:auto;"
+    >
+      <img
+        class="center-block org-banner"
+        src="static/images/University_of_Michigan_logo.png"
+        style="width:390px; height:auto; display:block; margin:auto;"
+      >
+    </a>
+  </div>
+</section>
+
+
+
+<footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+
+          <p>
+            This page was built using the <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank">Academic Project Page Template</a> which was adopted from the <a href="https://nerfies.github.io" target="_blank">Nerfies</a> project page.
+            You are free to borrow the source code of this website, we just ask that you link back to this page in the footer. <br> This website is licensed under a <a rel="license"  href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative
+            Commons Attribution-ShareAlike 4.0 International License</a>.
+          </p>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Statcounter tracking code -->
+  
+<!-- You can add a tracker to track page visits by creating an account at statcounter.com -->
+
+    <!-- End of Statcounter Code -->
+
+  </body>
+  </html>
