@@ -580,7 +580,8 @@
           return max;
         }
 
-        let sort = { by: AVG, dir: "desc" };
+        // ✅ 只改这一行：默认按 Average 从小到大排序
+        let sort = { by: AVG, dir: "asc" };
 
         function caret(dir){
           return `<svg class="sort-caret-svg" viewBox="0 0 12 12">
@@ -642,7 +643,6 @@
               `;
             }
 
-            // Average Profit: only bold if max among models (excluding Human); do NOT bold all
             const AP = avgProfit(r);
             const aBold = (typeof AP === "number") && (max[AVG].P !== null) && (AP === max[AVG].P);
 
