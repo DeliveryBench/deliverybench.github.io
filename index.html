@@ -446,6 +446,19 @@
         }
         .lb thead th:first-child{ background:var(--lb-head); z-index:3; }
       }
+      /* ✅ 强制：所有单元格严格居中（防止被 Bulma / 全局 table 样式覆盖） */
+      .lb th, .lb td{
+        text-align:center !important;
+      }
+
+      /* ✅ Model 列仍然左对齐（你现在的 left 类继续生效） */
+      .lb thead th.left,
+      .lb td.left{
+        text-align:left !important;
+      }
+      .lb thead th:first-child{
+        text-align:center !important;
+      }
 
       .col-profit-head{ background:var(--lb-profit-head)!important; }
       .col-profit{ background:var(--lb-profit)!important; }
@@ -603,7 +616,7 @@
           <table class="lb">
             <thead>
               <tr>
-                <th rowspan="2" class="left">Model</th>
+                <th rowspan="2">Model</th>
                 ${DATA.cities.map(c=>`
                   <th colspan="3" class="city-sort ${sort.by===c?'is-active':''}" data-city="${c}">
                     ${c}${sort.by===c?caret(sort.dir):""}
