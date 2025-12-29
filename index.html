@@ -216,6 +216,7 @@
                       <i class="fas fa-database"></i>
                     </span>
                     <span>SimWorld-Env</span>
+                    <span>SimWorld-Env</span>
                   </a>
                 </span>
 
@@ -378,8 +379,7 @@
 
 <!-- Leaderboard -->
 <section class="section hero is-small">
-  <!-- Inner wrapper: same width as video -->
-  <div style="width: 70%; margin: 0 auto;">
+  <div class="lb-container">
 
     <h2 class="title is-3 has-text-centered">Leaderboard</h2>
     <div id="delivery-leaderboard"></div>
@@ -390,13 +390,20 @@
         --lb-border:#e6e9ef;
         --lb-text:#1f2328;
         --lb-neg:#c0392b;
-        --lb-profit:#fff5e6;       /* Profit 列底色 */
-        --lb-profit-head:#ffedd6;  /* Profit 表头底色 */
-        --lb-underline:#cdd6e6;    /* 城市标题下划线颜色 */
-        --lb-underline-active:#aeb9cf; /* 点击/排序激活时颜色 */
+
+        --lb-profit:#fff5e6;
+        --lb-profit-head:#ffedd6;
+
+        --lb-underline:#cdd6e6;
+        --lb-underline-active:#aeb9cf;
+
+        /* Average Profit 轻微加深高亮 */
+        --lb-avg:#ffe8cc;
+        --lb-avg-head:#ffdcb3;
       }
 
-      .lb-wrap{ overflow-x:auto; margin-top:.2rem; }
+      .lb-container{ width:70%; margin:0 auto; }
+      .lb-wrap{ overflow-x:auto; margin-top:.2rem; -webkit-overflow-scrolling:touch; }
 
       table.lb{
         width:100%;
@@ -414,14 +421,12 @@
         border-bottom:1px solid var(--lb-border);
         padding:12px 12px;
         text-align:center;
-        vertical-align:middle;
         white-space:nowrap;
         background:#fff;
       }
       .lb thead th{
         background:var(--lb-head);
         font-weight:700;
-        text-align:center;
       }
       .lb .left{ text-align:left; white-space:normal; font-weight:600; }
       .lb .num{ font-variant-numeric: tabular-nums; }
@@ -429,17 +434,27 @@
       .lb tbody tr:hover td{ background:#f7faff; }
       .lb .neg{ color:var(--lb-neg); }
 
-      /* 粘性首列 */
+      /* 强制：表头居中（避免被 Bulma 覆盖） */
+      .lb thead th{ text-align:center !important; }
+      /* 但 Model 那个表头和首列仍然左对齐 */
+      .lb thead th.left, .lb td.left{ text-align:left !important; }
+
+      /* Sticky first column */
       @media (min-width: 992px){
-        .lb td:first-child,.lb th:first-child{ position:sticky; left:0; z-index:2; background:#fff; }
+        .lb td:first-child,.lb th:first-child{
+          position:sticky; left:0; z-index:2; background:#fff;
+        }
         .lb thead th:first-child{ background:var(--lb-head); z-index:3; }
       }
 
-      /* Profit 列高亮（注意：不再全列加粗） */
       .col-profit-head{ background:var(--lb-profit-head)!important; }
-      .col-profit{ background:var(--lb-profit)!important; } /* ← 去掉 font-weight:600 */
+      .col-profit{ background:var(--lb-profit)!important; }
 
-      /* 城市标题下方短横线（不顶满） */
+      /* Average Profit column highlight (slightly deeper orange) */
+      .col-avg-head{ background:var(--lb-avg-head)!important; }
+      .col-avg{ background:var(--lb-avg)!important; }
+
+      /* Sort header */
       .city-sort{ cursor:pointer; user-select:none; position:relative; }
       .city-sort::after{
         content:"";
@@ -448,23 +463,36 @@
         height:3px;
         border-radius:999px;
         background:var(--lb-underline);
-        margin:8px auto 0 auto; /* 居中 */
+        margin:8px auto 0;
       }
       .city-sort.is-active::after{ background:var(--lb-underline-active); }
 
-      /* 排序箭头 SVG 尺寸（实心三角） */
+      /* Average header tweak (move underline & caret left) */
+      .city-sort-avg::after{
+        width:70%;
+        margin-left:10%;
+        margin-right:auto;
+      }
+      .city-sort-avg .sort-caret-svg{ margin-left:2px; }
+
       .sort-caret-svg{
         width:12px; height:12px;
         margin-left:6px;
         vertical-align:middle;
       }
+
+      /* Mobile */
+      @media (max-width: 768px){
+        .lb-container{ width:100%; padding:0 12px; }
+        table.lb{ min-width: 820px; }
+        .lb th,.lb td{ padding:10px 8px; font-size:13px; }
+      }
     </style>
 
-    <!-- ==== 数据 JSON（不要在 JSON 内写注释） ==== -->
+    <!-- ===== Data ===== -->
     <script type="application/json" id="lb-data">
     {
       "cities": ["Small City", "Medium City", "Large City"],
-      "metrics": ["P", "E_base", "E_rating", "C"],
       "rows": [
         { "model": "GPT-5",
           "Small City":  { "P": 27.4, "E_base": 31.1, "E_rating": 11.5, "C": 15.2 },
@@ -515,165 +543,124 @@
     <script>
       (function(){
         const mount = document.getElementById("delivery-leaderboard");
-        const DATA_ORIG = JSON.parse(document.getElementById("lb-data").textContent);
+        const DATA = JSON.parse(document.getElementById("lb-data").textContent);
+        const currency = DATA.currency || "$";
 
-        const COLS = [
-          { key:"P", label:"Profit",  type:"profit"  },
-          { key:"E", label:"Earning", type:"earning" },
-          { key:"C", label:"Expense", type:"expense" }
-        ];
+        const fmt = x => `${currency}${x.toFixed(1)}`;
+        const isNeg = x => x < 0;
+        const AVG = "__AVG__";
 
-        const currency = DATA_ORIG.currency || "$";
-        const fmt = (x) => (typeof x === "number" ? `${currency}${x.toFixed(1)}` : x);
-        const isNeg = (x) => (typeof x === "number" && x < 0);
-
-        function earning(row, city){
-          const Eb = row[city]?.E_base ?? 0;
-          const Er = row[city]?.E_rating ?? 0;
-          return Eb + Er;
-        }
-        function cloneRows(rows){ return rows.map(r => JSON.parse(JSON.stringify(r))); }
-
-        function avgProfit(row){
-          return DATA_ORIG.cities.reduce((s,c)=> s + (row[c]?.P ?? 0), 0) / DATA_ORIG.cities.length;
+        function earning(r, c){
+          return (r[c]?.E_base ?? 0) + (r[c]?.E_rating ?? 0);
         }
 
-        // 只为 Profit & Earning 计算 max（Expense 不需要加粗对比）
-        function computeMaxes(data){
-          const maxMap = {};
-          for(const city of data.cities){
-            maxMap[city] = {};
-            for(const col of COLS){
-              if(col.key === "C"){
-                maxMap[city][col.key] = null;
-                continue;
-              }
-              const vals = data.rows
-                .filter(r => !(data.bold_max_among_models_only && r.model.toLowerCase()==="human"))
-                .map(r => (col.key==="E") ? earning(r, city) : r[city]?.[col.key])
-                .filter(v => typeof v === "number");
-              maxMap[city][col.key] = vals.length ? Math.max(...vals) : null;
-            }
+        function avgProfit(r){
+          return DATA.cities.reduce((s,c)=>s+(r[c]?.P??0),0)/DATA.cities.length;
+        }
+
+        function isHumanRow(r){
+          return (r.model || "").toLowerCase() === "human";
+        }
+
+        // Compute max for Profit & Earning per city (excluding Human if bold_max_among_models_only)
+        function computeMaxMap(rows){
+          const max = {};
+          for(const city of DATA.cities){
+            max[city] = { P: null, E: null };
+            const candidates = rows.filter(r => !(DATA.bold_max_among_models_only && isHumanRow(r)));
+            const pVals = candidates.map(r => r[city]?.P).filter(v => typeof v === "number");
+            const eVals = candidates.map(r => earning(r, city)).filter(v => typeof v === "number");
+            max[city].P = pVals.length ? Math.max(...pVals) : null;
+            max[city].E = eVals.length ? Math.max(...eVals) : null;
           }
-          return maxMap;
+          // Average Profit max (excluding Human)
+          const candidates = rows.filter(r => !(DATA.bold_max_among_models_only && isHumanRow(r)));
+          const aVals = candidates.map(r => avgProfit(r)).filter(v => typeof v === "number");
+          max[AVG] = { P: aVals.length ? Math.max(...aVals) : null };
+          return max;
         }
 
-        // 排序状态：默认按平均 Profit
-        let sortState = { by: "avgProfit", dir: "desc" }; // 'asc' | 'desc'
+        let sort = { by: AVG, dir: "desc" };
 
-        function sortRows(rows, by, dir){
-          const mul = dir === "asc" ? 1 : -1;
-          return cloneRows(rows).sort((a,b) => {
-            let va, vb;
-            if(by === "avgProfit"){
-              va = avgProfit(a);
-              vb = avgProfit(b);
-            }else{
-              va = a[by]?.P ?? -Infinity; // by=city 时按该城市 Profit
-              vb = b[by]?.P ?? -Infinity;
-            }
-            if(va === vb) return 0;
-            return (va > vb ? -1 : 1) * mul;
-          });
-        }
-
-        // 实心三角：desc=▼，asc=▲
-        function caretSVG(dir){
-          const up = (dir === "asc");
-          return `
-            <svg class="sort-caret-svg" viewBox="0 0 12 12" aria-hidden="true">
-              <polygon points="${up ? '6,2 10,8 2,8' : '2,4 10,4 6,10'}" fill="#667085"></polygon>
-            </svg>
-          `;
+        function caret(dir){
+          return `<svg class="sort-caret-svg" viewBox="0 0 12 12">
+            <polygon points="${dir==='asc'?'6,2 10,8 2,8':'2,4 10,4 6,10'}" fill="#667085"/>
+          </svg>`;
         }
 
         function render(){
-          const rowsSorted = sortRows(DATA_ORIG.rows, sortState.by, sortState.dir);
-          const data = { ...DATA_ORIG, rows: rowsSorted };
-          const maxMap = computeMaxes(data);
+          const rows = [...DATA.rows].sort((a,b)=>{
+            const va = sort.by===AVG ? avgProfit(a) : (a[sort.by]?.P ?? -1e9);
+            const vb = sort.by===AVG ? avgProfit(b) : (b[sort.by]?.P ?? -1e9);
+            return sort.dir==="desc" ? vb-va : va-vb;
+          });
+
+          const max = computeMaxMap(rows);
 
           let html = `
-            <div class="lb-wrap">
-              <table class="lb">
-                <thead>
-                  <tr>
-                    <th rowspan="2"
-                        id="lb-sort-model"
-                        class="left ${sortState.by==='avgProfit' ? 'city-sort is-active' : ''}"
-                        style="min-width:220px; cursor:pointer;"
-                        title="Click to sort by average Profit">
-                      Model ${sortState.by==='avgProfit' ? caretSVG(sortState.dir) : ``}
-                    </th>
-                    ${data.cities.map(c => `
-                      <th class="city-sort ${sortState.by===c ? 'is-active' : ''}"
-                          data-city="${c}" colspan="${COLS.length}"
-                          title="Click to sort by ${c} Profit">
-                        ${c} ${sortState.by===c ? caretSVG(sortState.dir) : ``}
-                      </th>
-                    `).join("")}
-                  </tr>
-                  <tr>
-                    ${data.cities.map(() =>
-                      COLS.map(col => `<th class="${col.type==='profit'?'col-profit-head':''}">${col.label}</th>`).join("")
-                    ).join("")}
-                  </tr>
-                </thead>
-                <tbody>
+          <div class="lb-wrap">
+          <table class="lb">
+            <thead>
+              <tr>
+                <th rowspan="2" class="left">Model</th>
+                ${DATA.cities.map(c=>`
+                  <th colspan="3" class="city-sort ${sort.by===c?'is-active':''}" data-city="${c}">
+                    ${c}${sort.by===c?caret(sort.dir):""}
+                  </th>`).join("")}
+                <th colspan="1"
+                    class="city-sort city-sort-avg ${sort.by===AVG?'is-active':''}"
+                    data-city="${AVG}">
+                  Average${sort.by===AVG?caret(sort.dir):""}
+                </th>
+              </tr>
+              <tr>
+                ${DATA.cities.map(()=>`
+                  <th class="col-profit-head">Profit</th>
+                  <th>Earning</th>
+                  <th>Expense</th>`).join("")}
+                <th class="col-avg-head">Profit</th>
+              </tr>
+            </thead>
+            <tbody>
           `;
 
-          for(const r of data.rows){
-            html += `<tr>`;
-            html += `<td class="left">${r.model}</td>`;
-            for(const city of data.cities){
-              const P = r[city]?.P;
-              const E = earning(r, city);
-              const C = r[city]?.C;
+          for(const r of rows){
+            html += `<tr><td class="left">${r.model}</td>`;
 
-              const cells = [
-                { val:P, cls:'col-profit', key:'P', title:'' },
-                { val:E, cls:'',           key:'E', title:`Earning = E_base + E_rating = ${currency}${(r[city]?.E_base ?? 0).toFixed(1)} + ${currency}${(r[city]?.E_rating ?? 0).toFixed(1)} = ${currency}${E.toFixed(1)}` },
-                { val:C, cls:'',           key:'C', title:'' }
-              ];
+            for(const c of DATA.cities){
+              const P = r[c]?.P;
+              const E = earning(r,c);
+              const C = r[c]?.C;
 
-              for(const cell of cells){
-                const isMax = (typeof cell.val==="number") && (cell.key !== 'C') && (cell.val === maxMap[city][cell.key]);
-                const negCls = isNeg(cell.val) ? 'neg' : '';
-                const strong = v => isMax ? `<strong>${v}</strong>` : v; // Profit/Earning 只有最大值才加粗
-                html += `<td class="num ${cell.cls} ${negCls}" ${cell.title?`title="${cell.title}"`:''}>${strong(fmt(cell.val))}</td>`;
-              }
+              const pBold = (typeof P === "number") && (max[c].P !== null) && (P === max[c].P);
+              const eBold = (typeof E === "number") && (max[c].E !== null) && (E === max[c].E);
+
+              html += `
+                <td class="num col-profit ${isNeg(P)?'neg':''}">${pBold ? `<strong>${fmt(P)}</strong>` : fmt(P)}</td>
+                <td class="num">${eBold ? `<strong>${fmt(E)}</strong>` : fmt(E)}</td>
+                <td class="num">${fmt(C)}</td>
+              `;
             }
+
+            // Average Profit: only bold if max among models (excluding Human); do NOT bold all
+            const AP = avgProfit(r);
+            const aBold = (typeof AP === "number") && (max[AVG].P !== null) && (AP === max[AVG].P);
+
+            html += `<td class="num col-avg ${isNeg(AP)?'neg':''}">${aBold ? `<strong>${fmt(AP)}</strong>` : fmt(AP)}</td>`;
             html += `</tr>`;
           }
 
           html += `</tbody></table></div>`;
           mount.innerHTML = html;
 
-          // 绑定 Model：按平均 Profit 排序
-          const modelTh = document.getElementById('lb-sort-model');
-          if(modelTh){
-            modelTh.addEventListener('click', () => {
-              if(sortState.by === "avgProfit"){
-                sortState.dir = (sortState.dir === "desc" ? "asc" : "desc");
-              }else{
-                sortState.by = "avgProfit";
-                sortState.dir = "desc";
-              }
+          document.querySelectorAll(".city-sort").forEach(th=>{
+            th.onclick=()=>{
+              const by=th.dataset.city;
+              sort = (sort.by===by)
+                ? {by,dir:sort.dir==="desc"?"asc":"desc"}
+                : {by,dir:"desc"};
               render();
-            });
-          }
-
-          // 绑定城市排序：按该城 Profit
-          document.querySelectorAll('.city-sort[data-city]').forEach(th => {
-            th.addEventListener('click', () => {
-              const city = th.getAttribute('data-city');
-              if(sortState.by === city){
-                sortState.dir = (sortState.dir === "desc" ? "asc" : "desc");
-              }else{
-                sortState.by = city;
-                sortState.dir = "desc";
-              }
-              render();
-            });
+            };
           });
         }
 
@@ -733,12 +720,14 @@
       </button>
     </div>
 
-    <pre id="bibtex-code"><code>@inproceedings{zhuang2025simworld,
-  title={SimWorld-Robotics: Synthesizing Photorealistic and Dynamic Urban Environments for Multimodal Robot Navigation and Collaboration},
-  author={Zhuang, Yan and Ren, Jiawei and Ye, Xiaokang and Shen, Jianzhi and Zhang, Ruixuan and Yue, Tianai and Faayez, Muhammad and He, Xuhong and Zhang, Xiyan and Ma, Ziqiao and Qin, Lianhui and Hu, Zhiting and Shu, Tianmin},
-  booktitle={Advances in Neural Information Processing Systems},
-  year={2025},
-  url={https://openreview.net/forum?id=EyOtIOmMUh}
+    <pre id="bibtex-code"><code>@misc{mao2025deliverybenchagentsearnprofit,
+      title={DeliveryBench: Can Agents Earn Profit in Real World?}, 
+      author={Lingjun Mao and Jiawei Ren and Kun Zhou and Jixuan Chen and Ziqiao Ma and Lianhui Qin},
+      year={2025},
+      eprint={2512.19234},
+      archivePrefix={arXiv},
+      primaryClass={cs.AI},
+      url={https://arxiv.org/abs/2512.19234}, 
 }</code></pre>
 
   </div>
