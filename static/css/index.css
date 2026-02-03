@@ -671,6 +671,12 @@ code {
   border-color: var(--primary-color);
 }
 
+.more-works-btn .simworld-btn-logo {
+  height: 1.2em;
+  width: auto;
+  vertical-align: middle;
+}
+
 .more-works-btn .dropdown-arrow {
   transition: var(--transition);
   font-size: 0.8rem;
