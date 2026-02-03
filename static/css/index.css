@@ -672,8 +672,10 @@ code {
 }
 
 .more-works-btn .simworld-btn-logo {
-  height: 1.2em;
-  width: auto;
+  height: 1em;
+  width: 1em;
+  object-fit: contain;
+  flex-shrink: 0;
   vertical-align: middle;
 }
 
