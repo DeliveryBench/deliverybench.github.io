@@ -651,16 +651,16 @@ code {
   color: var(--text-primary);
   border: 2px solid var(--border-color);
   border-radius: var(--border-radius-lg);
-  padding: 1rem 1.5rem;
+  padding: 0.85rem 1.25rem;
   font-weight: 600;
-  font-size: 1.15rem;
+  font-size: 1rem;
   box-shadow: var(--shadow-md);
   transition: var(--transition);
   cursor: pointer;
   text-decoration: none;
   display: inline-flex;
   align-items: center;
-  gap: 0.65rem;
+  gap: 0.55rem;
   font-family: 'Inter', sans-serif;
 }
 
